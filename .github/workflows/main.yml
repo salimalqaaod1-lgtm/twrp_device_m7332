@@ -16,3 +16,4 @@ jobs:
           DEVICE_NAME: m7332
           MAKEFILE_NAME: omni_m7332
           BUILD_TARGET: recovery
+          ARCH: arm
