@@ -1,0 +1,18 @@
+name: Build TWRP
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Recovery
+        uses: twrp-builder/action-twrp-builder@main
+        with:
+          DEVICE_TREE: https://github.com/salimalqaaod1-lgtm/twrp_device_m7332
+          DEVICE_NAME: m7332
+          MAKEFILE_NAME: omni_m7332
+          BUILD_TARGET: recovery
