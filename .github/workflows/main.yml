@@ -1,4 +1,4 @@
-name: Build TWRP for Android 11 TV
+name: Build TWRP for AOSP Android 11 TV (arm32)
 on:
   workflow_dispatch:
 
@@ -9,10 +9,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Build Tools
+      - name: Install Build Tools & Fix Libraries
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev libtinfo5 libncurses5
+          sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush test-utils schedtool squashfs-tools zlib1g-dev
+          sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb
+          sudo dpkg -i libtinfo5_6.2-0ubuntu2_amd64.deb
+          sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.2-0ubuntu2_amd64.deb
+          sudo dpkg -i libncurses5_6.2-0ubuntu2_amd64.deb
 
       - name: Sync Minimal Manifest
         run: |
@@ -40,5 +44,5 @@ jobs:
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-Recovery-m7332
+          name: TWRP-AOSP-m7332-arm32
           path: /home/runner/twrp/out/target/product/m7332/recovery.img
