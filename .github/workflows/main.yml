@@ -5,13 +5,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build Recovery
-        uses: shrp-project/action-shrp-build@master
+        uses: TeamWin-Action/TeamWin-Action-Build@main
         with:
           manifest_url: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git
           manifest_branch: twrp-9.0
