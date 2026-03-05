@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Recovery
-        uses: shrp-project/action-shrp-builder@main
+        uses: shrp-project/action-shrp-build@master
         with:
           manifest_url: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git
           manifest_branch: twrp-9.0
@@ -18,3 +18,11 @@ jobs:
           DEVICE_NAME: m7332
           MAKEFILE_NAME: omni_m7332
           BUILD_TARGET: recovery
+
+      - name: Upload Recovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: TWRP-m7332-Result
+          path: |
+            out/target/product/m7332/*.img
+            out/target/product/m7332/*.zip
