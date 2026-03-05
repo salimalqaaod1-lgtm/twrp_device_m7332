@@ -1,29 +1,44 @@
-name: Build TWRP 32-bit (Fixed)
+name: Build TWRP 32-bit (Manual)
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Recovery
-        uses: phantom-cat/twrp-builder@main
-        with:
-          manifest_url: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git
-          manifest_branch: twrp-9.0
-          device_tree: https://github.com/salimalqaaod1-lgtm/twrp_device_m7332
-          device_name: m7332
-          makefile_name: omni_m7332
-          target: recovery
+      - name: Install Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev
 
-      - name: Upload Recovery
+      - name: Sync Minimal Manifest
+        run: |
+          mkdir ~/twrp
+          cd ~/twrp
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/repo
+          chmod a+x ~/repo
+          sudo mv ~/repo /usr/local/bin/repo
+          repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b twrp-9.0 --depth=1
+          repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+
+      - name: Clone Device Tree
+        run: |
+          cd ~/twrp
+          git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
+
+      - name: Build TWRP
+        run: |
+          cd ~/twrp
+          export ALLOW_MISSING_DEPENDENCIES=true
+          source build/envsetup.sh
+          lunch omni_m7332-eng
+          make recoveryimage -j$(nproc --all)
+
+      - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-m7332-Result
-          path: |
-            out/target/product/m7332/*.img
-            out/target/product/m7332/*.zip
-
+          name: TWRP-Recovery-Image
+          path: /home/runner/twrp/out/target/product/m7332/recovery.img
