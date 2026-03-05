@@ -1,21 +1,12 @@
-name: Build TWRP 32-bit
+name: Recovery Build Emergency
 on:
   workflow_dispatch:
-
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Build Recovery
-        uses: twrp-builder/action-twrp-builder@main
-        with:
-          manifest_url: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git
-          manifest_branch: twrp-9.0
-          DEVICE_TREE: https://github.com/salimalqaaod1-lgtm/twrp_device_m7332
-          DEVICE_NAME: m7332
-          MAKEFILE_NAME: omni_m7332
-          BUILD_TARGET: recovery 
-          ARCH: arm
+      - name: Build
+        run: |
+          echo "Starting simple build check...
