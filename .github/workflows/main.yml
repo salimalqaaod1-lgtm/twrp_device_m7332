@@ -1,16 +1,16 @@
-name: Build TWRP 32-bit (Final Fix)
+name: Build TWRP 32-bit Final
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Build Recovery
-        uses: shrp-project/action-shrp-builder@main
+        uses: twrp-builder/action-twrp-builder@main
         with:
           manifest_url: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git
           manifest_branch: twrp-9.0
@@ -18,3 +18,4 @@ jobs:
           DEVICE_NAME: m7332
           MAKEFILE_NAME: omni_m7332
           BUILD_TARGET: recovery
+          ARCH: arm
