@@ -10,14 +10,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Recovery
-        uses: TeamWin-Action/TeamWin-Action-Build@main
+        uses: phantom-cat/twrp-builder@main
         with:
           manifest_url: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git
           manifest_branch: twrp-9.0
-          DEVICE_TREE: https://github.com/salimalqaaod1-lgtm/twrp_device_m7332
-          DEVICE_NAME: m7332
-          MAKEFILE_NAME: omni_m7332
-          BUILD_TARGET: recovery
+          device_tree: https://github.com/salimalqaaod1-lgtm/twrp_device_m7332
+          device_name: m7332
+          makefile_name: omni_m7332
+          target: recovery
 
       - name: Upload Recovery
         uses: actions/upload-artifact@v4
@@ -26,3 +26,4 @@ jobs:
           path: |
             out/target/product/m7332/*.img
             out/target/product/m7332/*.zip
+
