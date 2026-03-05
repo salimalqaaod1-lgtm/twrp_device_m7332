@@ -1,4 +1,4 @@
-name: Build TWRP 32-bit (Manual)
+name: Build TWRP for Android 11 TV
 on:
   workflow_dispatch:
 
@@ -12,7 +12,7 @@ jobs:
       - name: Install Build Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev
+          sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev libtinfo5 libncurses5
 
       - name: Sync Minimal Manifest
         run: |
@@ -21,7 +21,7 @@ jobs:
           curl https://storage.googleapis.com/git-repo-downloads/repo > ~/repo
           chmod a+x ~/repo
           sudo mv ~/repo /usr/local/bin/repo
-          repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b twrp-9.0 --depth=1
+          repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11 --depth=1
           repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
       - name: Clone Device Tree
@@ -40,5 +40,5 @@ jobs:
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-Recovery-Image
+          name: TWRP-Recovery-m7332
           path: /home/runner/twrp/out/target/product/m7332/recovery.img
