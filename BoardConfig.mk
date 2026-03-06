@@ -16,6 +16,8 @@ TARGET_BOOTLOADER_BOARD_NAME := m7332
 TARGET_NO_BOOTLOADER := true
 
 # Kernel & DTB
+BOARD_BOOTIMG_HEADER_VERSION := 0
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/kernel
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/dtb
 BOARD_PREBUILT_DTBIMAGE := $(DEVICE_PATH)/dtb
@@ -42,9 +44,6 @@ TW_MAX_BRIGHTNESS := 255
 TW_DEFAULT_BRIGHTNESS := 150
 TW_INPUT_BLACKLIST := "hbtp_vm" # لتجنب تداخل تعريفات اللمس الوهمية
 TW_NO_SCREEN_TIMEOUT := true    # لكي لا تنطفئ الشاشة وتضطر للبحث عن زر التشغيل
-
-TW_RECOVERY_SDK_VERSION := 30 # (أو حسب إصدار أندرويد جهازك)
-TW_INPUT_BLACKLIST := "hbtp_vm"
 
 
 # USB
