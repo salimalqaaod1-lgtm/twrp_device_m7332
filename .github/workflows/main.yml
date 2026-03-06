@@ -1,4 +1,4 @@
-name: Build TWRP for AOSP Android 11 TV (arm32)
+name: Build TWRP for MT9632
 on:
   workflow_dispatch:
 
@@ -9,61 +9,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Build Tools & Fix Libraries
+      - name: Install Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev libxml2-utils
-          sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb
-          sudo dpkg -i libtinfo5_6.2-0ubuntu2_amd64.deb
-          sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.2-0ubuntu2_amd64.deb
-          sudo dpkg -i libncurses5_6.2-0ubuntu2_amd64.deb
+          sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb && sudo dpkg -i libtinfo5_6.2-0ubuntu2_amd64.deb
+          sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.2-0ubuntu2_amd64.deb && sudo dpkg -i libncurses5_6.2-0ubuntu2_amd64.deb
 
-      - name: Sync Minimal Manifest
+      - name: Sync TWRP Source
         run: |
-          mkdir ~/twrp
-          cd ~/twrp
+          mkdir ~/twrp && cd ~/twrp
           curl https://storage.googleapis.com/git-repo-downloads/repo > ~/repo
-          chmod a+x ~/repo
-          sudo mv ~/repo /usr/local/bin/repo
+          chmod a+x ~/repo && sudo mv ~/repo /usr/local/bin/repo
           repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11 --depth=1
           repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-      - name: Clone Device Tree
+      - name: Clone & Patch
         run: |
           cd ~/twrp
-          # إنشاء المجلدات أولاً لضمان عدم ضياع المسار
           mkdir -p device/mediatek/m7332
           git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
-
-      - name: Patch Device Tree for Minimal Build
-        run: |
-          cd ~/twrp/device/mediatek/m7332
-          # حذف الملف المتسبب في أخطاء envsetup
+          cd device/mediatek/m7332
           rm -f vendorsetup.sh
-          # تصحيح المسارات الداخلية في كافة ملفات الـ MK
-          sed -i 's|device/m7332/twrp_device_m7332|device/mediatek/m7332|g' *.mk || true
-          sed -i 's|device/m7332|device/mediatek/m7332|g' *.mk || true
-          # تحويل المشروع ليعمل بنظام الحد الأدنى (Minimal) بدلاً من النظام الكامل
           sed -i 's/core_64bit.mk/core_minimal.mk/g' omni_m7332.mk
-          sed -i '/vendor\/omni\/config\/common.mk/d' *.mk || true
+          sed -i 's|device/m7332|device/mediatek/m7332|g' *.mk || true
 
-      - name: Build TWRP
+      - name: Build
         run: |
           cd ~/twrp
-          # إعدادات البيئة الأساسية لتجنب أخطاء الفقدان
           export ALLOW_MISSING_DEPENDENCIES=true
-          export LC_ALL=C
           source build/envsetup.sh
-          # اختيار الجهاز المستهدف
-          lunch omni_m7332-eng || { echo "Lunch failed, checking directories..."; ls -R device/mediatek/m7332; exit 1; }
-          # أمر البناء النهائي
+          lunch omni_m7332-eng
           make recoveryimage -j$(nproc --all)
 
-      - name: Upload Result
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-m7332-Final-Build
-          # رفع المجلد بالكامل إذا فشل إنتاج الملف الواحد للمعاينة
-          path: |
-            ~/twrp/out/target/product/m7332/recovery.img
-            ~/twrp/out/target/product/m7332/dtb.img
+          name: TWRP-m7332-Final
+          path: ~/twrp/out/target/product/m7332/recovery.img
