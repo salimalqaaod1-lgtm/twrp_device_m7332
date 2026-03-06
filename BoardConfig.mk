@@ -33,10 +33,19 @@ BOARD_BOOTIMG_HEADER_VERSION := 0
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 41943040
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-# Remote & Brightness
+# TWRP Display Settings
+TARGET_SCREEN_WIDTH := 1280
+TARGET_SCREEN_HEIGHT := 720
+TW_THEME := landscape_mdpi
 TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd-backlight/brightness"
 TW_MAX_BRIGHTNESS := 255
-TW_DEFAULT_BRIGHTNESS := 162
+TW_DEFAULT_BRIGHTNESS := 150
+TW_INPUT_BLACKLIST := "hbtp_vm" # لتجنب تداخل تعريفات اللمس الوهمية
+TW_NO_SCREEN_TIMEOUT := true    # لكي لا تنطفئ الشاشة وتضطر للبحث عن زر التشغيل
+
+TW_RECOVERY_SDK_VERSION := 30 # (أو حسب إصدار أندرويد جهازك)
+TW_INPUT_BLACKLIST := "hbtp_vm"
+
 
 # USB
 TW_EXCLUDE_DEFAULT_USB_INIT := true
