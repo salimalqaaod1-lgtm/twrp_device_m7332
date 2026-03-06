@@ -3,7 +3,7 @@
 # Device: m7332 (MT9632)
 #
 
-DEVICE_PATH := device/m7332/twrp_device_m7332
+DEVICE_PATH := device/mediatek/m7332
 
 # Architecture - Force 32-bit for stability with MT9632
 TARGET_ARCH := arm
