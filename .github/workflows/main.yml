@@ -1,4 +1,4 @@
-name: Build TWRP for MT9632 (Final Fix)
+name: Build TWRP for MT9632 (Final Version)
 on:
   workflow_dispatch:
 
@@ -9,58 +9,54 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Build Tools & Fix Libraries
+      - name: Install Build Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev libxml2-utils
-          # حل مشكلة مكتبات ncurses القديمة المطلوبة لأندرويد 11
           sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb && sudo dpkg -i libtinfo5_6.2-0ubuntu2_amd64.deb
           sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.2-0ubuntu2_amd64.deb && sudo dpkg -i libncurses5_6.2-0ubuntu2_amd64.deb
 
-      - name: Sync TWRP Minimal Manifest
+      - name: Sync TWRP Source
         run: |
           mkdir ~/twrp && cd ~/twrp
           curl https://storage.googleapis.com/git-repo-downloads/repo > ~/repo
           chmod a+x ~/repo && sudo mv ~/repo /usr/local/bin/repo
-          # استخدام TWRP 11
           repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11 --depth=1
           repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-      - name: Clone & Patch Device Tree
+      - name: Clone & Fix Paths
         run: |
           cd ~/twrp
-          # إنشاء المسار الصحيح ووضع الملفات فيه
           mkdir -p device/mediatek/m7332
+          # سحب المستودع الذي يحتوي على ملفات kl والـ kernel والـ dtb
           git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
           
           cd device/mediatek/m7332
-          # 1. حذف الملف الذي يسبب تعارض في بداية التشغيل
+          # حذف أي تعارضات وتصحيح المسارات
           rm -f vendorsetup.sh
-          
-          # 2. حذف استدعاء ملفات OmniROM المفقودة لتجنب خطأ dumpvars
           sed -i '/vendor\/omni/d' *.mk || true
-          
-          # 3. تصحيح المسارات الداخلية لتعمل مع المجلد الجديد
           sed -i 's|device/m7332|device/mediatek/m7332|g' *.mk || true
-          
-          # 4. تغيير الإعدادات لتعمل بنظام الـ Minimal (32-bit)
           sed -i 's/core_64bit.mk/core_minimal.mk/g' omni_m7332.mk || true
 
-      - name: Build TWRP Recovery
+      - name: Build TWRP
         run: |
           cd ~/twrp
           export ALLOW_MISSING_DEPENDENCIES=true
           export LC_ALL=C
           source build/envsetup.sh
-          # اختيار المنتج
-          lunch omni_m7332-eng || { echo "Lunch failed!"; ls -R device/mediatek/m7332; exit 1; }
-          # أمر البناء النهائي
+          lunch omni_m7332-eng
+          
+          # خدعة المسار: إنشاء مجلد المخرجات ونسخ الملفات وتسميتها بالصيغة المطلوبة
+          mkdir -p out/target/product/m7332/
+          cp device/mediatek/m7332/dtb out/target/product/m7332/dtb.img
+          cp device/mediatek/m7332/kernel out/target/product/m7332/kernel
+          
           make recoveryimage -j$(nproc --all)
 
-      - name: Upload Recovery Image
+      - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-m7332-Final
+          name: TWRP-m7332-Remote-Working
           path: |
             ~/twrp/out/target/product/m7332/recovery.img
-            ~/twrp/out/target/product/m7332/dtb.img
+            ~/twrp/out/target/product/m7332/*.img
