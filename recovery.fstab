@@ -18,6 +18,23 @@
 /dtb                         emmc      /dev/block/platform/mstar_mci.0/by-name/dtb                flags=display="DTB";backup=1;flashimg=1
 /optee                       emmc      /dev/block/platform/mstar_mci.0/by-name/optee              flags=display="OPTEE";backup=1;flashimg=1
 /armfw                       emmc      /dev/block/platform/mstar_mci.0/by-name/armfw              flags=display="ARM Firmware";backup=1;flashimg=1
+# mount point    fstype    device                                     flags
+/system          ext4      system                                     flags=display="System";logical;backup=1;wipeui
+/vendor          ext4      vendor                                     flags=display="Vendor";logical;backup=1;wipeui
+/scratch         ext4      scratch                                    flags=display="Scratch";logical;backup=1
+
+# الأقسام الحقيقية (Physical)
+/recovery        emmc      /dev/block/mmcblk0p10                      flags=display="Recovery";backup=1
+/boot            emmc      /dev/block/mmcblk0p11                      flags=display="Boot";backup=1
+/dtb             emmc      /dev/block/mmcblk0p15                      flags=display="DTB";backup=1
+/cache           ext4      /dev/block/mmcblk0p27                      flags=display="Cache"
+/userdata        ext4      /dev/block/mmcblk0p29                      flags=display="Data"
+/metadata        ext4      /dev/block/mmcblk0p23                      flags=display="Metadata"
+/misc            emmc      /dev/block/mmcblk0p9                       flags=display="Misc"
+
+# وسائط التخزين والتحكم
+/external_sd     vfat      /dev/block/mmcblk1p1    /dev/block/mmcblk1 flags=display="SD Card";storage;wipeui;removable
+/usb-otg         vfat      /dev/block/sda1         /dev/block/sda     flags=display="USB-OTG";storage;wipeui;removable
 
 # External Storage
 /external_sd                 auto      /dev/block/mmcblk1p1    /dev/block/mmcblk1                 flags=display="MicroSD";storage;wipeui;removable
