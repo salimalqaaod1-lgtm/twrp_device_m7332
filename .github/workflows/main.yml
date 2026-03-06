@@ -31,9 +31,7 @@ jobs:
       - name: Clone Device Tree
         run: |
           cd ~/twrp
-          # تم تعديل المسار ليتطابق مع DEVICE_PATH في BoardConfig.mk
-          git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/m7332/twrp_device_m7332
-
+          git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
       - name: Patch Device Tree for Minimal Build
         run: |
           cd ~/twrp/device/m7332/twrp_device_m7332
