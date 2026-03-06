@@ -16,7 +16,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
 PRODUCT_COPY_FILES += \
   #  $(LOCAL_PATH)/prebuilt/u_irt_keymap.kl:recovery/root/system/usr/keylayout/u_irt_keymap.kl \
     $(LOCAL_PATH)/prebuilt/ir_config.ini:recovery/root/vendor/etc/ir_config.ini
-    $(DEVICE_PATH)/init.recovery.m7332.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.m7332.rc
+  #  $(DEVICE_PATH)/init.recovery.m7332.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.m7332.rc
 
 # Device Characteristics
 PRODUCT_CHARACTERISTICS := tv
