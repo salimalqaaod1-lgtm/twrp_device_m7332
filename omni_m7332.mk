@@ -1,21 +1,17 @@
-# Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_minimal.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
+# Inherit from TWRP common configuration
+$(call inherit-product, vendor/twrp/config/common.mk)
 
 # Inherit from m7332 device configuration
-# تم تعديل المسار هنا ليتطابق مع مجلد mediatek الجديد
 $(call inherit-product, device/mediatek/m7332/device.mk)
 
-# Device identifier. This must come after all inclusions
+# Device identifier
 PRODUCT_DEVICE := m7332
 PRODUCT_NAME := omni_m7332
 PRODUCT_BRAND := mediatek
 PRODUCT_MODEL := m7332
 PRODUCT_MANUFACTURER := mediatek
 
-PRODUCT_GMS_CLIENTID_BASE := android-mediatek
-
-# Fingerprint from your original recovery
+# Fingerprint from your original recovery (لضمان التوافق مع النظام الأصلي)
 PRODUCT_BUILD_PROP_OVERRIDES += \
     TARGET_DEVICE=m7332 \
     PRODUCT_NAME=m7332 \
