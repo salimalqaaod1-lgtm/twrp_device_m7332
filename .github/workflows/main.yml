@@ -12,7 +12,9 @@ jobs:
       - name: Install Build Tools & Fix Libraries
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush test-results-2.0.0-rc.3 schedtool squashfs-tools zlib1g-dev
+          # تثبيت الأدوات الأساسية فقط للبناء
+          sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev libxml2-utils
+          # حل مشكلة المكتبات القديمة اللازمة لأندرويد 11
           sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb
           sudo dpkg -i libtinfo5_6.2-0ubuntu2_amd64.deb
           sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.2-0ubuntu2_amd64.deb
@@ -31,35 +33,29 @@ jobs:
       - name: Clone Device Tree
         run: |
           cd ~/twrp
-          # المسار المعتمد من نظام بناء أندرويد لـ Mediatek
+          # استخدام المسار الموحد الذي اتفقنا عليه
           git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
 
       - name: Patch Device Tree for Minimal Build
         run: |
           cd ~/twrp/device/mediatek/m7332
-          # حذف الملفات القديمة التي تسبب تعارض add_lunch_combo (الخطأ في السطر 8)
+          # تنظيف الملفات المسببة للأخطاء
           rm -f vendorsetup.sh
-          # تصحيح مسارات الملفات داخل الـ Device Tree لتعمل مع المجلد الجديد
-          sed -i 's|device/m7332/twrp_device_m7332|device/mediatek/m7332|g' *.mk || true
-          # تحويل البناء من 64-bit إلى 32-bit (المعمارية الحقيقية لـ MT9632)
+          # تصحيح المسارات والمعمارية (32-bit) تلقائياً
           sed -i 's/core_64bit.mk/core_minimal.mk/g' omni_m7332.mk
-          # حذف أي استدعاءات خارجية غير ضرورية قد تعطل البناء
-          sed -i '/vendor\/omni\/config\/common.mk/d' omni_m7332.mk
-          sed -i '/vendor\/omni\/config\/common.mk/d' device.mk || true
+          sed -i 's|device/m7332/twrp_device_m7332|device/mediatek/m7332|g' *.mk || true
+          sed -i '/vendor\/omni\/config\/common.mk/d' *.mk || true
 
       - name: Build TWRP
         run: |
           cd ~/twrp
           export ALLOW_MISSING_DEPENDENCIES=true
           source build/envsetup.sh
-          # اختيار هدف البناء (Lunch)
           lunch omni_m7332-eng
-          # البدء في صنع ملف الريكفري
           make recoveryimage -j$(nproc --all)
 
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-Android11-m7332-V2
-          # مسار الملف الناتج بعد انتهاء البناء
+          name: TWRP-m7332-Final
           path: ~/twrp/out/target/product/m7332/recovery.img
