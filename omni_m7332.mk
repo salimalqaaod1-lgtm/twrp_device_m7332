@@ -12,13 +12,14 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, vendor/omni/config/common.mk)
 
 # Inherit from m7332 device
-$(call inherit-product, device/mediatek/m7332/device.mk)
+$(call inherit-product, device/m7332/twrp_device_m7332/device.mk)
 
 PRODUCT_DEVICE := m7332
 PRODUCT_NAME := omni_m7332
-PRODUCT_BRAND := MediaTek
+PRODUCT_BRAND := mediatek
 PRODUCT_MODEL := m7332
 PRODUCT_MANUFACTURER := mediatek
+
 
 PRODUCT_GMS_CLIENTID_BASE := android-mediatek
 
