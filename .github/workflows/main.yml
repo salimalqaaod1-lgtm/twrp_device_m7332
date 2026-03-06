@@ -12,9 +12,7 @@ jobs:
       - name: Install Build Tools & Fix Libraries
         run: |
           sudo apt-get update
-          # تثبيت الأدوات الأساسية فقط للبناء
           sudo apt-get install -y bc build-essential zip curl libc6-dev libncurses5-dev libssl-dev pngcrush schedtool squashfs-tools zlib1g-dev libxml2-utils
-          # حل مشكلة المكتبات القديمة اللازمة لأندرويد 11
           sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb
           sudo dpkg -i libtinfo5_6.2-0ubuntu2_amd64.deb
           sudo wget http://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.2-0ubuntu2_amd64.deb
@@ -33,29 +31,39 @@ jobs:
       - name: Clone Device Tree
         run: |
           cd ~/twrp
-          # استخدام المسار الموحد الذي اتفقنا عليه
+          # إنشاء المجلدات أولاً لضمان عدم ضياع المسار
+          mkdir -p device/mediatek/m7332
           git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
 
       - name: Patch Device Tree for Minimal Build
         run: |
           cd ~/twrp/device/mediatek/m7332
-          # تنظيف الملفات المسببة للأخطاء
+          # حذف الملف المتسبب في أخطاء envsetup
           rm -f vendorsetup.sh
-          # تصحيح المسارات والمعمارية (32-bit) تلقائياً
-          sed -i 's/core_64bit.mk/core_minimal.mk/g' omni_m7332.mk
+          # تصحيح المسارات الداخلية في كافة ملفات الـ MK
           sed -i 's|device/m7332/twrp_device_m7332|device/mediatek/m7332|g' *.mk || true
+          sed -i 's|device/m7332|device/mediatek/m7332|g' *.mk || true
+          # تحويل المشروع ليعمل بنظام الحد الأدنى (Minimal) بدلاً من النظام الكامل
+          sed -i 's/core_64bit.mk/core_minimal.mk/g' omni_m7332.mk
           sed -i '/vendor\/omni\/config\/common.mk/d' *.mk || true
 
       - name: Build TWRP
         run: |
           cd ~/twrp
+          # إعدادات البيئة الأساسية لتجنب أخطاء الفقدان
           export ALLOW_MISSING_DEPENDENCIES=true
+          export LC_ALL=C
           source build/envsetup.sh
-          lunch omni_m7332-eng
+          # اختيار الجهاز المستهدف
+          lunch omni_m7332-eng || { echo "Lunch failed, checking directories..."; ls -R device/mediatek/m7332; exit 1; }
+          # أمر البناء النهائي
           make recoveryimage -j$(nproc --all)
 
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-m7332-Final
-          path: ~/twrp/out/target/product/m7332/recovery.img
+          name: TWRP-m7332-Final-Build
+          # رفع المجلد بالكامل إذا فشل إنتاج الملف الواحد للمعاينة
+          path: |
+            ~/twrp/out/target/product/m7332/recovery.img
+            ~/twrp/out/target/product/m7332/dtb.img
