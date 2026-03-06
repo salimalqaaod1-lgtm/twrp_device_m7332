@@ -1,15 +1,15 @@
 LOCAL_PATH := device/mediatek/m7332
 
-# نسخ ملفات تعريف الريموت (التي رفعتها أنت)
+# 1. نسخ ملفات تعريف أزرار الريموت كنترول (التي رفعتها أنت)
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/Generic.kl:recovery/root/system/usr/keylayout/Generic.kl \
     $(LOCAL_PATH)/AVRCP.kl:recovery/root/system/usr/keylayout/AVRCP.kl \
     $(LOCAL_PATH)/ir_config.ini:recovery/root/vendor/etc/ir_config.ini
 
-# إضافة لغات أساسية (الإنجليزية فقط لتوفير مساحة الـ 40MB)
+# 2. نسخ ملف خريطة الأقسام (fstab) لكي يرى TWRP الذاكرة الداخلية
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/recovery/root/system/etc/twrp.flags:recovery/root/system/etc/twrp.flags
+    $(LOCAL_PATH)/recovery.fstab:recovery/root/system/etc/recovery.fstab
 
-# استدعاء إعدادات أندرويد الأساسية
+# 3. استدعاء مكتبات أندرويد الأساسية اللازمة للبناء
 $(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/embedded.mk)
