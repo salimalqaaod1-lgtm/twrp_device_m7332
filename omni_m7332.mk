@@ -6,9 +6,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 # تم تعديل المسار هنا ليتطابق مع مجلد mediatek الجديد
 $(call inherit-product, device/mediatek/m7332/device.mk)
 
-# Inherit from Omni common product configuration
-$(call inherit-product, vendor/omni/config/common.mk)
-
 # Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := m7332
 PRODUCT_NAME := omni_m7332
