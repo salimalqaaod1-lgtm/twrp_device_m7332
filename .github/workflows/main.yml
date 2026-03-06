@@ -31,12 +31,13 @@ jobs:
       - name: Clone Device Tree
         run: |
           cd ~/twrp
-          git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
+          # تم تعديل المسار ليتطابق مع DEVICE_PATH في BoardConfig.mk
+          git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/m7332/twrp_device_m7332
 
       - name: Patch Device Tree for Minimal Build
         run: |
-          cd ~/twrp/device/mediatek/m7332
-         
+          # تم تعديل المسار هنا أيضاً ليتوافق مع المجلد الجديد
+          cd ~/twrp/device/m7332/twrp_device_m7332
           sed -i '/vendor\/omni\/config\/common.mk/d' omni_m7332.mk
           sed -i '/vendor\/omni\/config\/common.mk/d' device.mk || true
 
@@ -51,5 +52,5 @@ jobs:
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: TWRP-AOSP-m7332-arm32
-          path: /home/runner/twrp/out/target/product/m7332/recovery.img
+          name: TWRP-AOSP-m7332-V2
+          path: ~/twrp/out/target/product/m7332/recovery.img
