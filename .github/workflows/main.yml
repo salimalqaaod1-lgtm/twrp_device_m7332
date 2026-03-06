@@ -26,13 +26,18 @@ jobs:
 
       - name: Clone & Patch
         run: |
-          cd ~/twrp
+                - name: Clone & Patch
+        run: |
+         cd ~/twrp
           mkdir -p device/mediatek/m7332
           git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
           cd device/mediatek/m7332
           rm -f vendorsetup.sh
+          # هذا السطر سيحذف استدعاء ملفات Omni المفقودة من ملف omni_m7332.mk
+          sed -i '/vendor\/omni/d' omni_m7332.mk
           sed -i 's/core_64bit.mk/core_minimal.mk/g' omni_m7332.mk
           sed -i 's|device/m7332|device/mediatek/m7332|g' *.mk || true
+
 
       - name: Build
         run: |
