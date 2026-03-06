@@ -36,8 +36,10 @@ jobs:
 
       - name: Patch Device Tree for Minimal Build
         run: |
-          # تم تعديل المسار هنا أيضاً ليتوافق مع المجلد الجديد
           cd ~/twrp/device/m7332/twrp_device_m7332
+          # تصحيح المسارات داخل ملفات الـ mk لتعمل مع المجلد الجديد
+          sed -i 's|device/mediatek/m7332|device/m7332/twrp_device_m7332|g' *.mk
+          # حذف السطور التي تسبب مشاكل في البناء المصغر
           sed -i '/vendor\/omni\/config\/common.mk/d' omni_m7332.mk
           sed -i '/vendor\/omni\/config\/common.mk/d' device.mk || true
 
