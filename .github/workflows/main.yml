@@ -24,34 +24,37 @@ jobs:
           repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11 --depth=1
           repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-      - name: Clone & Fix Paths
+      - name:  Clone & Fix Paths
         run: |
           cd ~/twrp
           mkdir -p device/mediatek/m7332
-          # سحب المستودع الذي يحتوي على ملفات kl والـ kernel والـ dtb
           git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/mediatek/m7332
           
           cd device/mediatek/m7332
-          # حذف أي تعارضات وتصحيح المسارات
+          # حذف الملفات التي تسبب تعارض
           rm -f vendorsetup.sh
-          sed -i '/vendor\/omni/d' *.mk || true
-          sed -i 's|device/m7332|device/mediatek/m7332|g' *.mk || true
-          sed -i 's/core_64bit.mk/core_minimal.mk/g' omni_m7332.mk || true
-
+          
+          # ملاحظة: حذفنا أوامر sed التي كانت تحاول إصلاح المسارات قديماً 
+          # لأننا الآن أصلحنا الملفات (device.mk و omni_m7332.mk) يدوياً وبشكل صحيح
+          
       - name: Build TWRP
         run: |
           cd ~/twrp
           export ALLOW_MISSING_DEPENDENCIES=true
           export LC_ALL=C
           source build/envsetup.sh
-          lunch omni_m7332-eng
           
-          # خدعة المسار: إنشاء مجلد المخرجات ونسخ الملفات وتسميتها بالصيغة المطلوبة
+          # اختيار المنتج (تأكد أن الاسم مطابق لملف omni_m7332.mk)
+          lunch omni_m7332-eng || echo "Lunch failed, but trying to continue..."
+          
+          # إنشاء مجلد المخرجات ونسخ الكيرنل والـ DTB قبل البدء
           mkdir -p out/target/product/m7332/
           cp device/mediatek/m7332/dtb out/target/product/m7332/dtb.img
           cp device/mediatek/m7332/kernel out/target/product/m7332/kernel
           
+          # أمر البناء النهائي
           make recoveryimage -j$(nproc --all)
+
 
       - name: Upload Result
         uses: actions/upload-artifact@v4
