@@ -34,14 +34,15 @@ jobs:
           # تم تعديل المسار ليتطابق مع DEVICE_PATH في BoardConfig.mk
           git clone https://github.com/salimalqaaod1-lgtm/twrp_device_m7332 device/m7332/twrp_device_m7332
 
-      - name: Patch Device Tree for Minimal Build
+      -       - name: Patch Device Tree for Minimal Build
         run: |
           cd ~/twrp/device/m7332/twrp_device_m7332
-          # تصحيح المسارات داخل ملفات الـ mk لتعمل مع المجلد الجديد
+          # حذف الملفات القديمة التي تسبب تعارض add_lunch_combo
+          rm -f vendorsetup.sh
+          # تصحيح المسارات وحذف الاعتمادات غير الموجودة
           sed -i 's|device/mediatek/m7332|device/m7332/twrp_device_m7332|g' *.mk
-          # حذف السطور التي تسبب مشاكل في البناء المصغر
-          sed -i '/vendor\/omni\/config\/common.mk/d' omni_m7332.mk
-          sed -i '/vendor\/omni\/config\/common.mk/d' device.mk || true
+          sed -i 's|core_64bit.mk|core_minimal.mk|g' *.mk
+          sed -i '/vendor\/omni\/config\/common.mk/d' *.mk
 
       - name: Build TWRP
         run: |
