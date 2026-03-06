@@ -21,22 +21,17 @@ TARGET_PREBUILT_DTB := $(DEVICE_PATH)/dtb
 BOARD_PREBUILT_DTBIMAGE := $(DEVICE_PATH)/dtb
 
 # Kernel Settings
-BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2
+BOARD_KERNEL_CMDLINE := androidboot.boot_devices=mstar_mci.0 buildvariant=userdebug
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_PAGESIZE := 2048
-BOARD_BOOTIMG_HEADER_VERSION := 2
-BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOTIMG_HEADER_VERSION) --dtb $(TARGET_PREBUILT_DTB)
+BOARD_KERNEL_OFFSET := 0x00008000
+BOARD_RAMDISK_OFFSET := 0x01000000
+BOARD_TAGS_OFFSET := 0x00000100
+BOARD_BOOTIMG_HEADER_VERSION := 0
 
 # الحجم الدقيق بناءً على mmcblk0p10 (40MB)
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 41943040
 BOARD_FLASH_BLOCK_SIZE := 131072
-
-# TWRP Slim Mode (تقليل الحجم لضمان الملاءمة)
-TW_THEME := landscape_hdpi
-TW_EXTRA_LANGUAGES := false # تعطيل اللغات الإضافية لتوفير مساحة
-TW_INCLUDE_CRYPTO := false   # تعطيل التشفير لتقليل الحجم
-TW_EXCLUDE_PYTHON := true    # حذف بايثون لتوفير مساحة
-TW_EXCLUDE_ENCRYPTED_BACKUPS := true
 
 # Remote & Brightness
 TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd-backlight/brightness"
