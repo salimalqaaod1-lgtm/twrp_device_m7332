@@ -6,7 +6,10 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_VARIANT := generic
-TARGET_USES_64_BIT_BINDER := true
+
+# التصحيح الأهم: اجعل هذه القيمة false أو احذف السطر تماماً
+TARGET_USES_64_BIT_BINDER := false
+
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := m7332
