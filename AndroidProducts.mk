@@ -9,6 +9,5 @@ PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/omni_m7332.mk
 
 COMMON_LUNCH_CHOICES := \
-    omni_m7332-user \
-    omni_m7332-userdebug \
     omni_m7332-eng
+
