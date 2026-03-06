@@ -45,9 +45,23 @@ TW_DEFAULT_BRIGHTNESS := 150
 TW_INPUT_BLACKLIST := "hbtp_vm" # لتجنب تداخل تعريفات اللمس الوهمية
 TW_NO_SCREEN_TIMEOUT := true    # لكي لا تنطفئ الشاشة وتضطر للبحث عن زر التشغيل
 
+# إعدادات الواجهة لـ 720p
+TW_THEME := landscape_hdpi
+DEVICE_SCREEN_WIDTH := 1280
+DEVICE_SCREEN_HEIGHT := 720
+RECOVERY_GRAPHICS_USE_LINUX_FBDEV := true
 
-# USB
-TW_EXCLUDE_DEFAULT_USB_INIT := true
+
+# تفعيل المداخل وتلقي البيانات
+TW_EXCLUDE_DEFAULT_USB_INIT := false
 TW_HAS_MTP := true
+TW_HAS_USB_STORAGE := true
+TW_INPUT_BLACKLIST := "hbtp_vm"
+
+# أوامر إضافية لتعريف المنافذ كمضيف (Host)
+TARGET_RECOVERY_DEVICE_MODULES += libion
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.0-service
+
 
 TW_DEVICE_VERSION := Salim_Alqaaod_TV_40MB
