@@ -8,8 +8,8 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_minimal.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 
 # Inherit from m7332 device configuration
-# هذا هو السطر الذي تسبب في الخطأ، قمنا بتصحيحه الآن
-$(call inherit-product, device/m7332/twrp_device_m7332/device.mk)
+
+$(call inherit-product, device/mediatek/m7332/device.mk)
 
 # Inherit from Omni common product configuration
 $(call inherit-product, vendor/omni/config/common.mk)
