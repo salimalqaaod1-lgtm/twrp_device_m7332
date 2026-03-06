@@ -9,6 +9,3 @@ PRODUCT_COPY_FILES += \
 # نسخ ملف الأقسام
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery.fstab:recovery/root/system/etc/recovery.fstab
-
-# تعريف المنتج - استبدل الأسطر القديمة بهذا السطر فقط
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
