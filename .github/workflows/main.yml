@@ -53,7 +53,7 @@ jobs:
           cp device/mediatek/m7332/kernel out/target/product/m7332/kernel
           
           # أمر البناء النهائي
-          make recoveryimage -j$(nproc --all)
+          make recoveryimage 
 
 
       - name: Upload Result
