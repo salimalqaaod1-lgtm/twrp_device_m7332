@@ -57,4 +57,3 @@ jobs:
           name: TWRP-m7332-Remote-Working
           path: |
             ~/twrp/out/target/product/m7332/recovery.img
-            ~/twrp/out/target/product/m7332/*.img
