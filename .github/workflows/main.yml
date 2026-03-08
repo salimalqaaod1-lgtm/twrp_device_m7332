@@ -47,11 +47,7 @@ jobs:
           # اختيار المنتج (تأكد أن الاسم مطابق لملف omni_m7332.mk)
           lunch omni_m7332-eng || echo "Lunch failed, but trying to continue..."
           
-          # إنشاء مجلد المخرجات ونسخ الكيرنل والـ DTB قبل البدء
-          mkdir -p out/target/product/m7332/
-          cp device/mediatek/m7332/dtb out/target/product/m7332/dtb.img
-          cp device/mediatek/m7332/kernel out/target/product/m7332/kernel
-          
+
           # أمر البناء النهائي
           make recoveryimage 
 
