@@ -42,8 +42,7 @@ jobs:
           cd ~/twrp
           export ALLOW_MISSING_DEPENDENCIES=true
           export LC_ALL=C
-          source build/envsetup.sh
-          
+          source build/AndroidProducts.mk
           # اختيار المنتج (تأكد أن الاسم مطابق لملف omni_m7332.mk)
           lunch omni_m7332-eng || echo "Lunch failed, but trying to continue..."
           
